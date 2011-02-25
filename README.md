@@ -2,7 +2,7 @@
 
 ## Features
 
-* Packages jobs as [http://php.net/phar](PHAR) files for speedy and convenient deployment.
+* Packages jobs as [PHAR](http://php.net/phar) files for speedy and convenient deployment.
  * Also generates shell scripts to invoke a job (requires `$HADOOP_HOME` to be defined).
 * Abstracted input parsing and splitting
 * Supports custom arguments for the Hadoop invocation
@@ -26,7 +26,7 @@ The `examples` sub-directory contains a number of examples.
 ### Prerequisites
 
 * A functioning Hadoop installation, with namenode, jobtracker and all other components running.
- * If you are developing locally, follow the Hadoop Quick Start Guide to set up [http://hadoop.apache.org/common/docs/r0.20.2/quickstart.html#PseudoDistributed](pseudo-distributed mode).
+ * If you are developing locally, follow the Hadoop Quick Start Guide to set up [pseudo-distributed mode](http://hadoop.apache.org/common/docs/r0.20.2/quickstart.html#PseudoDistributed).
 * The PHAR PHP extension must be enabled, and `phar.readonly` must be set to `0` in php.ini if you want to compile jobs.
 
 
