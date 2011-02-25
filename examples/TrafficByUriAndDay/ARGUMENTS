@@ -1,0 +1,5 @@
+-D stream.num.map.output.key.fields=2 \
+-D stream.num.reduce.output.key.fields=2 \
+-mapper 'php -d detect_unicode=off TrafficByUriAndDay.phar mapper' \
+-combiner aggregate \
+-reducer aggregate \

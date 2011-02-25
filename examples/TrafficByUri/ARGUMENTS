@@ -1,0 +1,3 @@
+-mapper 'php -d detect_unicode=off TrafficByUri.phar mapper' \
+-combiner aggregate \
+-reducer aggregate \

@@ -1,0 +1,3 @@
+-mapper 'php -d detect_unicode=off HitsByUri2.phar mapper' \
+-combiner aggregate \
+-reducer aggregate \
