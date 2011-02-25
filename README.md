@@ -26,7 +26,7 @@ The `examples` sub-directory contains a number of examples.
 ### Prerequisites
 
 * A functioning Hadoop installation, with namenode, jobtracker and all other components running.
- * If you are developing locally, follow the Hadoop Quick Start Guide to set up pseudo-distributed mode.
+ * If you are developing locally, follow the Hadoop Quick Start Guide to set up [http://hadoop.apache.org/common/docs/r0.20.2/quickstart.html#PseudoDistributed](pseudo-distributed mode).
 * The PHAR PHP extension must be enabled, and `phar.readonly` must be set to `0` in php.ini if you want to compile jobs.
 
 
