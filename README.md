@@ -10,7 +10,6 @@
 
 ### Planned Features
 
-* Iterators for reducers (reduces memory footprint over the current array implementation).
 * Unit testing capabilities (Mappers and Reducers could be tested locally).
 * Support for any sort of input (might already work; it hasn't really been tested with input like XML, for example).
 * Automatic detection of streaming settings if possible (so it knows about the configured key size et cetera).
@@ -34,7 +33,7 @@ The `examples` sub-directory contains a number of examples.
 
 Create a folder (this folder name will be the job name later on), with a `Mapper.php` containing the mapper class, a `Reducer.php` containing a reducer class (if desired), and, if you want, an `ARGUMENTS` file with additional arguments.
 
-***Note: when you have an ARGUMENTS file, you must include full `-mapper` and `-reducer` commands, see the examples. Any `-D` flags in ARGUMENTS must also precede any other switches such as `-mapper` or `-file`.***
+*Note: when you have an ARGUMENTS file, you must include full `-mapper` and `-reducer` commands, see the examples. Any `-D` flags in ARGUMENTS must also precede any other switches such as `-mapper` or `-file`.*
 
 ### Job Compilation
 
@@ -42,7 +41,7 @@ Assuming your job (and thus folder) name is "TpsReportCount", run:
 
     bin/compile.sh TpsReportCount <BUILDDIR>
 
-***Note: the build dir must exist and be writeable.***
+*Note: the build dir must exist and be writeable.*
 
 ### Job Invocation
 
