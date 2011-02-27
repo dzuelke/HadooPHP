@@ -109,7 +109,7 @@ abstract class Reducer extends Base implements \Iterator
 	}
 	
 	/**
-	 * The mapper implementation.
+	 * The reducer implementation.
 	 *
 	 * @param      mixed       The key for the given records.
 	 * @param      Traversable An iterator delivering the values for the current key.
