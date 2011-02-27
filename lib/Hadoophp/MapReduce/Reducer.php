@@ -4,57 +4,117 @@ namespace Hadoophp\MapReduce;
 
 require_once('Hadoophp/MapReduce/Base.php');
 
-abstract class Reducer extends Base
+abstract class Reducer extends Base implements \Iterator
 {
+	protected $previousKey = null;
+	protected $currentKey = null;
+	protected $currentValue = null;
+	
+	/**
+	 * Constructor.
+	 */
+	public function __construct()
+	{
+		parent::__construct();
+		
+		// init
+		$this->readAhead();
+		$this->previousKey = $this->currentKey;
+	}
+	
 	/**
 	 * Main handler function, invoked by the runner.
-	 * Will hand each key and an array of all values to the reduce() method.
-	 *
-	 * @TODO       This needs to be rewritten to use iterators for much improved memory efficiency.
+	 * Will hand each key and an iterator for all corresponding values to the reduce() method.
 	 */
 	public function handle()
 	{
-		$values = array();
-		$lastkey = null;
-		while(($line = $this->read()) !== false) {
-			$kv = $this->split($line);
-			if(!$kv || count($kv) != 2) {
-				// we need a key and value pair, but we didn't get that, so we skip this record
-				continue;
-			}
-			list($key, $value) = $kv;
-			
-			if($key != $lastkey) {
-				// new key, time to reduce before proceeding
-				if($lastkey !== null) {
-					// it's not the very first iteration
-					$this->reduce($lastkey, $values);
-					// reset values array
-					$values = array();
+		while($this->key() !== null) {
+			$this->reduce($this->key(), $this);
+			$this->reset();
+		}
+	}
+	
+	/**
+	 * Read the next input chunk.
+	 */
+	private function readAhead()
+	{
+		// reset
+		$this->currentKey = $this->currentValue = null;
+		// scan forward to the next valid entry
+		while(true) {
+			// ingest
+			$chunk = $this->read();
+			if($chunk === false) {
+				// EOF
+				return;
+			} else {
+				$kv = $this->split($chunk);
+				if($kv && count($kv) == 2) {
+					list($this->currentKey, $this->currentValue) = $kv;
+					return;
 				}
-				
-				// remember new key
-				$lastkey = $key;
 			}
-			
-			$values[] = $value;
 		}
-		
-		// one last reduce if necessary
-		if($values && $lastkey !== null) {
-			$this->reduce($lastkey, $values);
-		}
+	}
+	
+	/**
+	 * Reset the iterator so another foreach() run for the next key will be possible.
+	 */
+	public function reset()
+	{
+		// allow iteration again
+		$this->previousKey = $this->currentKey;
+	}
+	
+	/**
+	 * @see        Iterator::current()
+	 */
+	public function current()
+	{
+		return $this->currentValue;
+	}
+	
+	/**
+	 * @see        Iterator::key()
+	 */
+	public function key()
+	{
+		return $this->currentKey;
+	}
+	
+	/**
+	 * @see        Iterator::next()
+	 */
+	public function next()
+	{
+		$this->readAhead();
+	}
+	
+	/**
+	 * @see        Iterator::rewind()
+	 */
+	public function rewind()
+	{
+		// nop
+	}
+	
+	/**
+	 * @see        Iterator::valid()
+	 */
+	public function valid()
+	{
+		// make sure iteration ends once the key changes; reset() will take care of changing previousKey so that iteration works once again
+		return $this->currentKey == $this->previousKey;
 	}
 	
 	/**
 	 * The mapper implementation.
 	 *
-	 * @param      mixed The key for the given records.
-	 * @param      array An array of values for the given record.
-	 *
-	 * @TODO       This will soon change so $values is an iterator.
+	 * @param      mixed       The key for the given records.
+	 * @param      Traversable An iterator delivering the values for the current key.
 	 */
-	abstract protected function reduce($key, $values);
+	abstract protected function reduce($key, \Traversable $values);
 }
 
 ?>
