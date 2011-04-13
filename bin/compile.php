@@ -14,8 +14,16 @@ if(!Phar::canWrite()) {
 }
 
 $jobdir = realpath($_SERVER['argv'][$_SERVER['argc']-2]);
+if($jobdir === false || !is_dir($jobdir) || !is_readable($jobdir)) {
+	echo sprintf("Input directory '%s' not found or not readable.\n\n", $_SERVER['argv'][$_SERVER['argc']-2]);
+	exit(1);
+}
 $jobname = basename($jobdir);
 $builddir = realpath($_SERVER['argv'][$_SERVER['argc']-1]);
+if($builddir === false || !is_dir($builddir) || !is_writable($builddir)) {
+	echo sprintf("Output directory '%s' not found or not writable.\n\n", $_SERVER['argv'][$_SERVER['argc']-1]);
+	exit(1);
+}
 $jobphar = "$builddir/$jobname.phar";
 $jobsh = "$builddir/$jobname.sh";
 
