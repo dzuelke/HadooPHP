@@ -52,10 +52,20 @@ if(file_exists("$jobdir/ARGUMENTS")) {
 }
 
 file_put_contents($jobsh, sprintf('#!/bin/sh
+confswitch=""
+while getopts ":c:" opt; do
+	case $opt in
+		c) confswitch="--config $OPTARG";;
+		\?) echo "Invalid option: -$OPTARG"; exit 1;;
+		:) echo "Option -$OPTARG requires an argument."; exit 1;;
+	esac
+done
+shift $((OPTIND-1))
+
 if [ $# -lt 2 ]
 then
 	echo "Usage: $0 HDFSINPUTDIR ... HDFSOUTPUTDIR"
-	exit
+	exit 1
 fi
 
 input=""
@@ -82,7 +92,7 @@ else
 fi
 dir=`dirname $0`
 
-$hadoop jar $streaming \\
+$hadoop $confswitch jar $streaming \\
 %s
 $input \\
 $output \\
