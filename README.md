@@ -12,7 +12,7 @@
 
 * Unit testing capabilities (Mappers and Reducers could be tested locally).
 * Support for any sort of input (might already work; it hasn't really been tested with input like XML, for example).
-* Automatic detection of streaming settings if possible (so it knows about the configured key size et cetera).
+* Automatic detection of streaming settings (so it knows about the configured key field separators and lengths et cetera).
 
 
 ## Examples
@@ -48,3 +48,7 @@ Assuming your job (and thus folder) name is "TpsReportCount", run:
 Assuming your job name is "TpsReportCount", run:
 
     path/to/builddir/TpsReportCount.sh <HDFSINPUTDIR> <HDFSOUTPUTDIR>
+
+You may also pass the path to a Hadoop config dir (similar to the `--config` argument of the `hadoop` binary):
+
+    path/to/builddir/TpsReportCount.sh -c path/to/dir/with/remote-cluster-config <HDFSINPUTDIR> <HDFSOUTPUTDIR>
