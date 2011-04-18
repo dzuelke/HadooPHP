@@ -9,17 +9,26 @@ require_once('Hadoophp/MapReduce/Base.php');
  */
 abstract class Mapper extends Base
 {
-	/**
-	 * Default splitter function for input.
-	 * Hadoop streaming sends just the line unless configured otherwise, so there is no key by default.
-	 *
-	 * @param      string The input, typically a line.
-	 *
-	 * @return     array An array consisting of a key and a value.
-	 */
-	protected function split($line)
+	public function __construct()
 	{
-		return array(null, $line);
+		parent::__construct();
+		
+		$this->inputFieldSeparator = isset($_SERVER['stream_map_input_field_separator']) ? $_SERVER['stream_map_input_field_separator'] : "\t";
+		$this->outputFieldSeparator = isset($_SERVER['stream_map_output_field_separator']) ? $_SERVER['stream_map_output_field_separator'] : "\t";
+		// hard-code
+		$this->inputKeyFields = 1;
+		// input fields can't be configured, but "ignoreKey" (only for TextInputWriter, which we assume is the default) plays a role
+		if(!isset($_SERVER['stream_map_input_writer_class']) || $_SERVER['stream_map_input_writer_class'] == 'org.apache.hadoop.streaming.io.TextInputWriter') {
+			// if ignoreKey is true or if it's not set and we're using TextInputFormat (it's a default for that one), set to 0
+			$isTIF = !isset($_SERVER['mapred_input_format_class']) || $_SERVER['mapred_input_format_class'] == 'org.apache.hadoop.mapred.TextInputFormat';
+			if(
+				(!isset($_SERVER['stream_map_input_ignoreKey']) && $isTIF) ||
+				(isset($_SERVER['stream_map_input_ignoreKey']) && $_SERVER['stream_map_input_ignoreKey'] == 'true')
+			) {
+				$this->inputKeyFields = 0;
+			}
+		}
+		$this->outputKeyFields = isset($_SERVER['stream_num_map_output_key_fields']) ? (int)$_SERVER['stream_num_map_output_key_fields'] : 1;
 	}
 	
 	/**

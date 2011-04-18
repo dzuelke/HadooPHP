@@ -17,6 +17,12 @@ abstract class Reducer extends Base implements \Iterator
 	{
 		parent::__construct();
 		
+		$this->inputFieldSeparator = isset($_SERVER['stream_reduce_input_field_separator']) ? $_SERVER['stream_reduce_input_field_separator'] : "\t";
+		$this->outputFieldSeparator = isset($_SERVER['stream_reduce_output_field_separator']) ? $_SERVER['stream_reduce_output_field_separator'] : "\t";
+		// yes, this is correct
+		$this->inputKeyFields = isset($_SERVER['stream_num_map_output_key_fields']) ? (int)$_SERVER['stream_num_map_output_key_fields'] : 1;
+		$this->outputKeyFields = isset($_SERVER['stream_num_reduce_output_key_fields']) ? (int)$_SERVER['stream_num_reduce_output_key_fields'] : 1;
+		
 		// init
 		$this->readAhead();
 		$this->previousKey = $this->currentKey;

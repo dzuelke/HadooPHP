@@ -2,6 +2,8 @@
 
 namespace Hadoophp\MapReduce;
 
+require_once('Hadoophp/MapReduce/Key.php');
+
 /**
  * Base class all mappers and reducers can extend from.
  */
@@ -12,10 +14,10 @@ abstract class Base
 	 */
 	private $handle;
 	
-	/**
-	 * The default pattern for generating output (for mappers or reducers).
-	 */
-	protected $outputPattern = "%s\t%s\n";
+	protected $inputFieldSeparator = "\t";
+	protected $outputFieldSeparator = "\t";
+	protected $inputKeyFields = 1;
+	protected $outputKeyFields = 1;
 	
 	/**
 	 * Constructor.
@@ -23,6 +25,8 @@ abstract class Base
 	public function __construct()
 	{
 		$this->handle = fopen('php://stdin', 'r');
+		
+		$this->reporterPrefix = isset($_SERVER['stream_stderr_reporter_prefix']) ? $_SERVER['stream_stderr_reporter_prefix'] : 'reporter:';
 	}
 	
 	/**
@@ -45,21 +49,35 @@ abstract class Base
 	 */
 	protected function split($line)
 	{
-		return explode("\t", $line, 2);
+		if($this->inputKeyFields == 0) {
+			// no key
+			$key = array(null);
+			$value = $line;
+		} elseif($this->inputKeyFields != 1) {
+			$parts = explode($this->inputFieldSeparator, $line, $this->inputKeyFields + 1); // max keyfields + 1 elements
+			$key = array_splice($parts, 0, $this->inputKeyFields);
+			$value = array_pop($parts); // will be null if there weren't $inputKeyFields+1 parts
+		}
+		
+		return array(new Key($key, $this->inputFieldSeparator, $this->inputKeyFields), $value); // return 
 	}
 	
 	/**
 	 * Emit output.
-	 * Uses the given key and value and formats the defined output pattern using these two arguments.
+	 * Uses the given key and value and emits using these two arguments.
 	 *
-	 * @see        Hadoophp\MapReduce\Base::$outputPattern
-	 *
-	 * @param      string The key to emit with.
+	 * @param      mixed  The key (string, array or Key object) to emit with.
 	 * @param      string The value to emit with.
 	 */
 	protected function emit($key, $value)
 	{
-		echo sprintf($this->outputPattern, $key, $value);
+		if($key instanceof Key) {
+			$key = $key->getParts();
+		} elseif(!is_array($key)) {
+			$key = array($key);
+		}
+		
+		echo implode($this->outputFieldSeparator, $key) . $this->outputFieldSeparator . $value . "\n";
 	}
 	
 	/**
@@ -72,7 +90,7 @@ abstract class Base
 	 */
 	protected function emitCounter($group, $counter, $amount = 1)
 	{
-		file_put_contents('php://stderr', sprintf("reporter:counter:%s,%s,%d\n", $group, $counter, $amount));
+		file_put_contents('php://stderr', sprintf("%scounter:%s,%s,%d\n", $this->reporterPrefix, $group, $counter, $amount));
 	}
 	
 	/**
@@ -82,7 +100,7 @@ abstract class Base
 	 */
 	protected function emitStatus($message)
 	{
-		file_put_contents('php://stderr', sprintf("reporter:status:%s\n", $message));
+		file_put_contents('php://stderr', sprintf("%sstatus:%s\n", $this->reporterPrefix, $message));
 	}
 	
 	/**
