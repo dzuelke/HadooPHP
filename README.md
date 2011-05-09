@@ -4,15 +4,15 @@
 
 * Packages jobs as [PHAR](http://php.net/phar) files for speedy and convenient deployment.
  * Also generates shell scripts to invoke a job (requires `$HADOOP_HOME` to be defined).
-* Abstracted input parsing and splitting
-* Supports custom arguments for the Hadoop invocation
+* Automatic detection of streaming settings (so it knows about the configured key field separators and lengths et cetera).
+* Abstracted input parsing and splitting (only supports line-based input at the moment though).
+* Supports custom arguments for the Hadoop invocation.
 
 
 ### Planned Features
 
 * Unit testing capabilities (Mappers and Reducers could be tested locally).
-* Support for any sort of input (might already work; it hasn't really been tested with input like XML, for example).
-* Automatic detection of streaming settings (so it knows about the configured key field separators and lengths et cetera).
+* Support for input formats other than TextInputFormat (only line-based stuff works out of the box right now).
 
 
 ## Examples
