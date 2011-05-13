@@ -8,6 +8,10 @@
 * Abstracted input parsing and splitting (only supports line-based input at the moment though).
 * Supports custom arguments for the Hadoop invocation.
 
+### Known Issues
+
+* Field based partitioning (`-D stream.num.map.output.key.fields=2 -D mapred.text.key.partitioner.options=-k1,1 -partitioner org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner`) does not work at the moment as the reducer just compares keys, but really should compare field keys instead.
+* Something like `KeyValueTexInputFormat` does not work, partly because passing it as `-inputformat` sets the property to `StreamingInputFormat` (must investigate why), and `-D mapred.input.format.class` seems to have no effect. Unsure how to fix.
 
 ### Planned Features
 
