@@ -53,7 +53,7 @@ abstract class Base
 			// no key
 			$key = array(null);
 			$value = $line;
-		} elseif($this->inputKeyFields != 1) {
+		} else {
 			$parts = explode($this->inputFieldSeparator, $line, $this->inputKeyFields + 1); // max keyfields + 1 elements
 			$key = array_splice($parts, 0, $this->inputKeyFields);
 			$value = array_pop($parts); // will be null if there weren't $inputKeyFields+1 parts
