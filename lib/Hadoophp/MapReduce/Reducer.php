@@ -82,9 +82,18 @@ abstract class Reducer extends Base implements \Iterator
 	}
 	
 	/**
+	 * Casts the key to string so it always works in foreach()es
 	 * @see        Iterator::key()
 	 */
 	public function key()
+	{
+		return (string)$this->currentKey;
+	}
+	
+	/**
+	 * Return the current key object (unlike key(), this doesn't cast to string).
+	 */
+	public function getCurrentKey()
 	{
 		return $this->currentKey;
 	}
@@ -111,7 +120,24 @@ abstract class Reducer extends Base implements \Iterator
 	public function valid()
 	{
 		// make sure iteration ends once the key changes; reset() will take care of changing previousKey so that iteration works once again
-		return $this->currentKey == $this->previousKey;
+		if(isset($_SERVER['mapred_partitioner_class']) && $_SERVER['mapred_partitioner_class'] == 'org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner' && isset($_SERVER['mapred_text_key_partitioner_options'])) {
+			$options = $_SERVER['mapred_text_key_partitioner_options'];
+			$ranges = explode(' ', $options);
+			$ck = $this->currentKey ? $this->currentKey->getParts() : array();
+			$pk = $this->previousKey ? $this->previousKey->getParts() : array();
+			foreach($ranges as $range) {
+				if(preg_match('#^-k(?P<from>\d+(,(?P<to>\d+))?)$#', $range, $matches)) {
+					$from = $matches['from'] - 1;
+					$to = (isset($matches['to']) ? $matches['to'] : $matches['from']) - 1;
+					if(array_slice($ck, $from, $to-$from+1) != array_slice($pk, $from, $to-$from+1)) {
+						return false;
+					}
+				}
+			}
+			return true;
+		} else {
+			return $this->currentKey == $this->previousKey;
+		}
 	}
 	
 	/**
