@@ -1,8 +1,10 @@
 #!/usr/bin/env php
 <?php
 
-if($_SERVER['argc'] < 3) {
-	echo "Usage: " . basename(__FILE__) . " <path-to-jobs-folder> <path-to-output-folder>\n";
+$opts = getopt('i:t:h', array('help'));
+
+if(isset($opts['h']) || isset($opts['help']) || ($_SERVER['argc']-count($opts)*2) < 3) {
+	echo "Usage: " . basename(__FILE__) . " [OPTION]... JOBDIR OUTPUTDIR\n";
 	echo "\n";
 	echo "Options:\n";
 	echo "  -i <path>     Directory to package with phar (can be repeated).\n";
@@ -30,8 +32,6 @@ if($builddir === false || !is_dir($builddir) || !is_writable($builddir)) {
 }
 $jobphar = "$builddir/$jobname.phar";
 $jobsh = "$builddir/$jobname.sh";
-
-$opts = getopt('i:t:');
 
 if(isset($opts['t'])) {
 	$tz = $opts['t'];
