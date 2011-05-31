@@ -27,9 +27,14 @@ if($builddir === false || !is_dir($builddir) || !is_writable($builddir)) {
 $jobphar = "$builddir/$jobname.phar";
 $jobsh = "$builddir/$jobname.sh";
 
+$tz = date_default_timezone_get();
+
 $phar = new Phar($jobphar, RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | RecursiveDirectoryIterator::KEY_AS_FILENAME, 'my.phar');
 $phar->startBuffering();
-$phar->setStub("#!/usr/bin/env php\n" . $phar->createDefaultStub('run.php', 'run.php'));
+$stub = $phar->createDefaultStub('run.php', false);
+// inject timezone and add shebang (substr cuts off the leading "<?php" bit)
+$stub = "#!/usr/bin/env php\n<?php\ndate_default_timezone_set('$tz');\n" . substr($stub, 5);
+$phar->setStub($stub);
 // for envs without phar, this will work and not create a checksum error, but invocation needs to be "php archive.phar then":
 // $phar->setStub($phar->createDefaultStub('run.php', 'run.php'));
 $phar->buildFromDirectory(__DIR__ . '/../lib/'); 
