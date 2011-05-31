@@ -2,9 +2,13 @@
 <?php
 
 if($_SERVER['argc'] < 3) {
-	echo "Usage: " . basename(__FILE__) . " <path-to-jobs-folder> <path-to-output-folder>\n\n";
+	echo "Usage: " . basename(__FILE__) . " <path-to-jobs-folder> <path-to-output-folder>\n";
+	echo "\n";
 	echo "Options:\n";
-	echo "  -i <path>    Directory to package with phar\n\n";
+	echo "  -i <path>     Directory to package with phar (can be repeated).\n";
+	echo "  -t <timezone> Name of the timezone to force in generated scripts.\n";
+	echo "                If not given, the timezone of this machine is used.\n";
+	echo "\n";
 	exit(1);
 }
 
@@ -27,7 +31,19 @@ if($builddir === false || !is_dir($builddir) || !is_writable($builddir)) {
 $jobphar = "$builddir/$jobname.phar";
 $jobsh = "$builddir/$jobname.sh";
 
-$tz = date_default_timezone_get();
+$opts = getopt('i:t:');
+
+if(isset($opts['t'])) {
+	$tz = $opts['t'];
+} else {
+	$tz = date_default_timezone_get();
+}
+try {
+	new DateTimeZone($tz);
+} catch(Exception $e) {
+	echo sprintf("Invalid timezone '%s'.\n\n", $tz);
+	exit(1);
+}
 
 $phar = new Phar($jobphar, RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | RecursiveDirectoryIterator::KEY_AS_FILENAME, 'my.phar');
 $phar->startBuffering();
@@ -39,7 +55,6 @@ $phar->setStub($stub);
 // $phar->setStub($phar->createDefaultStub('run.php', 'run.php'));
 $phar->buildFromDirectory(__DIR__ . '/../lib/'); 
 $phar->buildFromDirectory($jobdir);
-$opts = getopt('i:');
 if(isset($opts['i'])) {
 	foreach((array)$opts['i'] as $path) {
 		$phar->buildFromDirectory(realpath($path));
