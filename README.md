@@ -47,6 +47,8 @@ Assuming your job (and thus folder) name is "TpsReportCount", run:
 
 *Note: the build dir must exist and be writeable.*
 
+You can pass path names to include in the package and the default timezone to set for scripts to `compile.sh`; invoke it without arguments for usage help.
+
 ### Job Invocation
 
 Assuming your job name is "TpsReportCount", run:
