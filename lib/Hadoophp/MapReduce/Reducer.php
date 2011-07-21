@@ -91,7 +91,8 @@ abstract class Reducer extends Base implements \Iterator
 	 */
 	public function key()
 	{
-		return (string)$this->currentKey;
+		// must not cast null to a string, otherwise handle() will reduce forever
+		return $this->currentKey === null ? $this->currentKey : (string)$this->currentKey;
 	}
 	
 	/**
