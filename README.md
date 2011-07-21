@@ -52,8 +52,8 @@ You can pass path names to include in the package and the default timezone to se
 
 Assuming your job name is "TpsReportCount", run:
 
-    path/to/builddir/TpsReportCount.sh <HDFSINPUTDIR> <HDFSOUTPUTDIR>
+    path/to/builddir/TpsReportCount.sh <HDFSINPUTPATH> <HDFSOUTPUTPATH>
 
-You may also pass the path to a Hadoop config dir (similar to the `--config` argument of the `hadoop` binary):
+You may also pass the path to a Hadoop config dir (equivalent to the `--config` argument of the `hadoop` binary):
 
-    path/to/builddir/TpsReportCount.sh -c path/to/dir/with/remote-cluster-config <HDFSINPUTDIR> <HDFSOUTPUTDIR>
+    path/to/builddir/TpsReportCount.sh -c path/to/dir/with/remote-cluster-config <HDFSINPUTPATH> <HDFSOUTPUTPATH>

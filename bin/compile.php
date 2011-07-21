@@ -92,7 +92,13 @@ shift $((OPTIND-1))
 
 if [ $# -lt 2 ]
 then
-	echo "Usage: $0 HDFSINPUTDIR ... HDFSOUTPUTDIR"
+	echo "Usage: $0 [-c HADOOPCONFDIR] HDFSINPUTPATH... HDFSOUTPUTPATH"
+	echo ""
+	echo "HDFSINPUTPATH can be repeated to use multiple paths as input for the job."
+	echo ""
+	echo "Options:"
+	echo " -c HADOOPCONFDIR  Gets passed to hadoop via "--config" (see hadoop help)."
+	echo ""
 	exit 1
 fi
 
