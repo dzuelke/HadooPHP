@@ -53,13 +53,19 @@ $stub = "#!/usr/bin/env php\n<?php\ndate_default_timezone_set('$tz');\n" . subst
 $phar->setStub($stub);
 // for envs without phar, this will work and not create a checksum error, but invocation needs to be "php archive.phar then":
 // $phar->setStub($phar->createDefaultStub('run.php', 'run.php'));
-$phar->buildFromDirectory(__DIR__ . '/../lib/'); 
-$phar->buildFromDirectory($jobdir);
+
+$buildDirectories = array(
+	realpath(__DIR__ . '/../lib/'),
+	realpath($jobdir),
+);
 if(isset($opts['i'])) {
-	foreach((array)$opts['i'] as $path) {
-		$phar->buildFromDirectory(realpath($path));
-	}
+	$buildDirectories = array_merge($buildDirectories, (array)$opts['i']);
 }
+$filterRegex = '#^((/|^)(?!\\.)[^/]*)+$#';
+foreach($buildDirectories as $path) {
+	$phar->buildFromDirectory(realpath($path), $filterRegex);
+}
+
 $phar->stopBuffering();
 
 if(file_exists("$jobdir/ARGUMENTS")) {
