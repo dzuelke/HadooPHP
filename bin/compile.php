@@ -47,12 +47,12 @@ try {
 
 $phar = new Phar($jobphar, RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | RecursiveDirectoryIterator::KEY_AS_FILENAME, 'my.phar');
 $phar->startBuffering();
-$stub = $phar->createDefaultStub('run.php', false);
+$stub = $phar->createDefaultStub('Hadoophp/_run.php', false);
 // inject timezone and add shebang (substr cuts off the leading "<?php" bit)
 $stub = "#!/usr/bin/env php\n<?php\ndate_default_timezone_set('$tz');\n" . substr($stub, 5);
 $phar->setStub($stub);
 // for envs without phar, this will work and not create a checksum error, but invocation needs to be "php archive.phar then":
-// $phar->setStub($phar->createDefaultStub('run.php', 'run.php'));
+// $phar->setStub($phar->createDefaultStub('Hadoophp/_run.php', 'Hadoophp/_run.php'));
 
 $buildDirectories = array(
 	realpath(__DIR__ . '/../lib/'),
