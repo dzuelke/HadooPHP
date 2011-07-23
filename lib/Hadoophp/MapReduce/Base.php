@@ -59,9 +59,14 @@ abstract class Base
 			$key = array(null);
 			$value = $line;
 		} else {
-			$parts = explode($this->inputFieldSeparator, $line, $this->inputKeyFields + 1); // max keyfields + 1 elements
-			$key = array_splice($parts, 0, $this->inputKeyFields);
-			$value = array_pop($parts); // will be null if there weren't $inputKeyFields+1 parts
+			$parts = array_chunk(explode($this->inputFieldSeparator, $line, $this->inputKeyFields + 1), $this->inputKeyFields); // max keyfields + 1 elements, then chunk to key size
+			// $parts should now have two entries, one with the key parts, one with just one value part
+			if(count($parts) != 2) {
+				// invalid record
+				return null;
+			}
+			$key = $parts[0];
+			$value = $parts[1][0]; // this is guaranteed to be there or offset [1] wouldn't even exist
 		}
 		
 		return array(new Key($key, $this->inputFieldSeparator, $this->inputKeyFields), $value); // return 
