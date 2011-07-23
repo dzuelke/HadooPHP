@@ -2,8 +2,12 @@
 <?php
 
 $opts = getopt('i:t:h', array('help', 'debug'));
+$optlength = 0;
+// count all flags, and count string values twice (then it wasn't just a flag, so it'll use up two argv entries
+// must do recursively since args can be repeated
+array_walk_recursive($opts, function($value) use(&$optlength) { if(is_scalar($value)) $optlength++; if(is_string($value)) $optlength++; });
 
-if(isset($opts['h']) || isset($opts['help']) || ($_SERVER['argc']-count($opts)*2) < 3) {
+if(isset($opts['h']) || isset($opts['help']) || ($_SERVER['argc']-$optlength) < 3) {
 	echo "Usage: " . basename(__FILE__) . " [OPTION]... JOBDIR OUTPUTDIR\n";
 	echo "\n";
 	echo "Options:\n";
