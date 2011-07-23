@@ -32,6 +32,9 @@ abstract class Base
 	/**
 	 * Read a complete record from the input.
 	 * This default implementation reads a line and trims the trailing newline.
+	 * Returns the result or false if EOF reached.
+	 *
+	 * @return     mixed The input record as a string or false if EOF was reached.
 	 */
 	protected function read() {
 		$retval = fgets($this->handle);
@@ -46,6 +49,8 @@ abstract class Base
 	 * Splits a record into key and value; this default implementation assumes a tab character as the separator.
 	 *
 	 * @param      string The line read by the read() method.
+	 *
+	 * @return     array An array with key and value, or null for malformed input.
 	 */
 	protected function split($line)
 	{
