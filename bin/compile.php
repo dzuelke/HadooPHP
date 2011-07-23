@@ -7,9 +7,10 @@ if(isset($opts['h']) || isset($opts['help']) || ($_SERVER['argc']-count($opts)*2
 	echo "Usage: " . basename(__FILE__) . " [OPTION]... JOBDIR OUTPUTDIR\n";
 	echo "\n";
 	echo "Options:\n";
-	echo "  --debug       Build debug version of package (with internal counters etc).\n";
-	echo "  -i <path>     Directory to package with phar (can be repeated).\n";
-	echo "  -t <timezone> Name of the timezone to force in generated scripts.\n";
+	echo "     --debug  : Build debug version of package (with internal counters etc).\n";
+	echo "  -h/--help   : Display this help screen.\n";
+	echo "  -i PATH     : PATH of directory to package with phar (can be repeated).\n";
+	echo "  -t TIMEZONE : Name of the TIMEZONE to force in generated scripts.\n";
 	echo "                If not given, the timezone of this machine is used.\n";
 	echo "\n";
 	exit(1);
