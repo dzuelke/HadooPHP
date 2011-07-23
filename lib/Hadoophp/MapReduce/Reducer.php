@@ -40,6 +40,11 @@ abstract class Reducer extends Base implements \Iterator
 			while($this->valid()) {
 				$this->next();
 			}
+			
+			if(HADOOPHP_DEBUG) {
+				$this->emitCounter('SkippingTaskCounters', 'ReduceProcessedGroups'); // defined in org.apache.hadoop.mapred.SkipBadRecords
+			}
+			
 			$this->reset();
 		}
 	}

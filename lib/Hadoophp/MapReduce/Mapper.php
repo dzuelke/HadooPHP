@@ -45,6 +45,10 @@ abstract class Mapper extends Base
 			list($key, $value) = $kv;
 			
 			$this->map($key, $value);
+			
+			if(HADOOPHP_DEBUG) {
+				$this->emitCounter('SkippingTaskCounters', 'MapProcessedRecords'); // defined in org.apache.hadoop.mapred.SkipBadRecords
+			}
 		}
 	}
 	

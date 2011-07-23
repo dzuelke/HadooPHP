@@ -1,12 +1,13 @@
 #!/usr/bin/env php
 <?php
 
-$opts = getopt('i:t:h', array('help'));
+$opts = getopt('i:t:h', array('help', 'debug'));
 
 if(isset($opts['h']) || isset($opts['help']) || ($_SERVER['argc']-count($opts)*2) < 3) {
 	echo "Usage: " . basename(__FILE__) . " [OPTION]... JOBDIR OUTPUTDIR\n";
 	echo "\n";
 	echo "Options:\n";
+	echo "  --debug       Build debug version of package (with internal counters etc).\n";
 	echo "  -i <path>     Directory to package with phar (can be repeated).\n";
 	echo "  -t <timezone> Name of the timezone to force in generated scripts.\n";
 	echo "                If not given, the timezone of this machine is used.\n";
@@ -49,7 +50,7 @@ $phar = new Phar($jobphar, RecursiveDirectoryIterator::CURRENT_AS_FILEINFO | Rec
 $phar->startBuffering();
 $stub = $phar->createDefaultStub('Hadoophp/_run.php', false);
 // inject timezone and add shebang (substr cuts off the leading "<?php" bit)
-$stub = "#!/usr/bin/env php\n<?php\ndate_default_timezone_set('$tz');\n" . substr($stub, 5);
+$stub = "#!/usr/bin/env php\n<?php\ndate_default_timezone_set('$tz');\ndefine('HADOOPHP_DEBUG', " . var_export(isset($opts['debug']), true) . ");\n" . substr($stub, 5);
 $phar->setStub($stub);
 // for envs without phar, this will work and not create a checksum error, but invocation needs to be "php archive.phar then":
 // $phar->setStub($phar->createDefaultStub('Hadoophp/_run.php', 'Hadoophp/_run.php'));

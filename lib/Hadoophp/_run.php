@@ -5,6 +5,10 @@ if($_SERVER['argc'] != 2 || !in_array($mode = strtolower($_SERVER['argv'][1]), a
 	exit(1);
 }
 
+if(!defined('HADOOPHP_DEBUG')) {
+	define('HADOOPHP_DEBUG', false);
+}
+
 $job = basename($argv[0], '.phar');
 $mode = ucfirst(strtolower($mode));
 require($mode . '.php');
