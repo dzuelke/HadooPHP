@@ -34,8 +34,8 @@ abstract class Reducer extends Base implements \Iterator
 	 */
 	public function handle()
 	{
-		while($this->key() !== null) {
-			$this->reduce($this->key(), $this);
+		while(($key = $this->getCurrentKey()) !== null) {
+			$this->reduce($key, $this);
 			// make sure that if a reducer exits prematurely, we scan ahead to the next key
 			while($this->valid()) {
 				$this->next();
