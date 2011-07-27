@@ -14,7 +14,7 @@ class Util {
 		}
 	}
 	
-	public static function findMinMax(Traversable $it, callback $extractor = null) {
+	public static function findMinMax(\Traversable $it, callback $extractor = null) {
 		if($extractor === null) {
 			$extractor = function($value) {
 				return $value;
