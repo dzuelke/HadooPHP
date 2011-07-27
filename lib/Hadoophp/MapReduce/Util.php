@@ -21,15 +21,17 @@ class Util {
 			};
 		}
 		
-		$min = $max = $extractor(current($it));
-		$value = $extractor(next($it));
-		while($value !== false) {
+		$min = $max = $extractor($it->current());
+		$it->next();
+		$value = $extractor($it->current());
+		while($it->valid()) {
 			if($value > $max) {
 				$max = $value;
 			} elseif($value < $min) {
 				$min = $value;
 			}
-			$value = next($it);
+			$it->next();
+			$value = $it->current();
 		}
 		
 		return array($min, $max);
