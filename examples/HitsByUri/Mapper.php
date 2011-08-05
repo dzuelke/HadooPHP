@@ -10,10 +10,14 @@ class Mapper extends \Hadoophp\MapReduce\Mapper
 		if($log = \Hadoophp\MapReduce\Util::parseApacheLogLine($value)) {
 			$this->emit($log['request_uri'], 1);
 			// diagnostics
-			$this->emitCounter('com.github.dzuelke.hadoophp.examples.HitsByUri', 'MAP_PARSED_RECORDS');
+			if(HADOOPHP_DEBUG) {
+				$this->emitCounter('com.github.dzuelke.hadoophp.examples.HitsByUri', 'MAP_PARSED_RECORDS');
+			}
 		} else {
 			// diagnostics
-			$this->emitCounter('com.github.dzuelke.hadoophp.examples.HitsByUri', 'MAP_FAILED_RECORDS');
+			if(HADOOPHP_DEBUG) {
+				$this->emitCounter('com.github.dzuelke.hadoophp.examples.HitsByUri', 'MAP_FAILED_RECORDS');
+			}
 		}
 	}
 }
