@@ -10,7 +10,7 @@
 
 ### Known Issues
 
-* Something like `KeyValueTexInputFormat` does not work, partly because passing it as `-inputformat` sets the property to `StreamingInputFormat` (must investigate why), and `-D mapred.input.format.class` seems to have no effect. Unsure how to fix.
+* Something like `KeyValueTextInputFormat` does not work, partly because passing it as `-inputformat` sets the property to `StreamingInputFormat` (must investigate why), and `-D mapred.input.format.class` seems to have no effect. Unsure how to fix.
 
 ### Planned Features
 
