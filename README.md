@@ -36,7 +36,7 @@ The `examples` sub-directory contains a number of examples.
 
 Create a folder (this folder name will be the job name later on), with a `Mapper.php` containing the mapper class, a `Reducer.php` containing a reducer class (if desired), and, if you want, an `ARGUMENTS` file with additional arguments.
 
-*Note: when you have an ARGUMENTS file, you must include full `-mapper` and `-reducer` commands, see the examples. Any `-D` flags in ARGUMENTS must also precede any other switches such as `-mapper` or `-file`.*
+*Note: when you have an ARGUMENTS file, you must include full `-mapper` and `-reducer` commands, see the examples. Any `-D` flags in ARGUMENTS must also precede any other switches such as `-mapper` or `-file`. Every line in ARGUMENTS must be terminated by a backslash because the raw contents of the file are inserted into the generated shell script.*
 
 ### Job Compilation
 
@@ -46,14 +46,16 @@ Assuming your job (and thus folder) name is "TpsReportCount", run:
 
 *Note: the build dir must exist and be writeable.*
 
-You can pass path names to include in the package and the default timezone to set for scripts to `compile.sh`; invoke it without arguments for usage help.
+You can pass path names to include in the package and the default timezone to set for scripts to `compile.sh`; invoke it without arguments for usage help. The `--debug` switch enables debug mode which means the `HADOOPHP_DEBUG` constant will be set to true, you can use this to add counter or message emitters to your code that should only run in such a case.
 
 ### Job Invocation
 
 Assuming your job name is "TpsReportCount", run:
 
-    path/to/builddir/TpsReportCount.sh <HDFSINPUTPATH> <HDFSOUTPUTPATH>
+    path/to/builddir/TpsReportCount.sh <HDFSINPUTPATH...> <HDFSOUTPUTPATH>
+
+*Note: you may pass any number of input path names; the last path name given is the output path where results will be written to.*
 
 You may also pass the path to a Hadoop config dir (equivalent to the `--config` argument of the `hadoop` binary):
 
-    path/to/builddir/TpsReportCount.sh -c path/to/dir/with/remote-cluster-config <HDFSINPUTPATH> <HDFSOUTPUTPATH>
+    path/to/builddir/TpsReportCount.sh -c path/to/dir/with/remote-cluster-config <HDFSINPUTPATH...> <HDFSOUTPUTPATH>
