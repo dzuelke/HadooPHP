@@ -1,0 +1,3 @@
+-mapper 'php -d detect_unicode=off HitsByHour.phar mapper' \
+-combiner aggregate \
+-reducer aggregate \
