@@ -1,2 +1,2 @@
 #!/bin/sh
-php `dirname $0`/compile.php $*
+php -D phar.readonly=0 `dirname $0`/compile.php $*
