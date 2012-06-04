@@ -130,8 +130,8 @@ abstract class Reducer extends Base implements \Iterator
 	public function valid()
 	{
 		// make sure iteration ends once the key changes; reset() will take care of changing previousKey so that iteration works once again
-		if(isset($_SERVER['mapred_partitioner_class']) && $_SERVER['mapred_partitioner_class'] == 'org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner' && isset($_SERVER['mapred_text_key_partitioner_options'])) {
-			$options = $_SERVER['mapred_text_key_partitioner_options'];
+		if(isset($_SERVER['mapred_partitioner_class']) && $_SERVER['mapred_partitioner_class'] == 'org.apache.hadoop.mapred.lib.KeyFieldBasedPartitioner' && (isset($_SERVER['mapred_text_key_partitioner_options']) || isset($_SERVER['mapreduce_partition_keypartitioner_options']))) {
+			$options = isset($_SERVER['mapred_text_key_partitioner_options']) ? $_SERVER['mapred_text_key_partitioner_options'] /* 0.20 */ : $_SERVER['mapreduce_partition_keypartitioner_options'] /* 0.23/YARN */;
 			$ranges = explode(' ', $options);
 			$ck = $this->currentKey ? $this->currentKey->getParts() : array();
 			$pk = $this->previousKey ? $this->previousKey->getParts() : array();
