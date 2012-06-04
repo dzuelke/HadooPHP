@@ -93,9 +93,11 @@ if(file_exists("$jobdir/ARGUMENTS")) {
 
 file_put_contents($jobsh, sprintf('#!/bin/sh
 confswitch=""
-while getopts ":c:" opt; do
+streaming=""
+while getopts ":c:s:" opt; do
 	case $opt in
 		c) confswitch="--config $OPTARG";;
+		s) streaming="$OPTARG";;
 		\?) echo "Invalid option: -$OPTARG"; exit 1;;
 		:) echo "Option -$OPTARG requires an argument."; exit 1;;
 	esac
@@ -104,12 +106,13 @@ shift $((OPTIND-1))
 
 if [ $# -lt 2 ]
 then
-	echo "Usage: $0 [-c HADOOPCONFDIR] HDFSINPUTPATH... HDFSOUTPUTPATH"
+	echo "Usage: $0 [OPTION...] HDFSINPUTPATH... HDFSOUTPUTPATH"
 	echo ""
 	echo "HDFSINPUTPATH can be repeated to use multiple paths as input for the job."
 	echo ""
 	echo "Options:"
 	echo " -c HADOOPCONFDIR  Gets passed to hadoop via "--config" (see hadoop help)."
+	echo " -s STREAMINGJAR   Path to hadoop-streaming-*.jar"
 	echo ""
 	exit 1
 fi
@@ -131,10 +134,16 @@ done
 if [ $HADOOP_HOME ]
 then
 	hadoop=$HADOOP_HOME/bin/hadoop
-	streaming=$HADOOP_HOME"/contrib/streaming/hadoop-streaming-*.jar"
+	if [ -z $streaming ]
+	then
+		streaming=$HADOOP_HOME"/contrib/streaming/hadoop-streaming-*.jar"
+	fi
 else
 	hadoop="hadoop"
-	streaming="/usr/lib/hadoop/contrib/streaming/hadoop-streaming-*.jar"
+	if [ -z $streaming ]
+	then
+		streaming="/usr/lib/hadoop/contrib/streaming/hadoop-streaming-*.jar"
+	fi
 fi
 dir=`dirname $0`
 
